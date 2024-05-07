@@ -42,14 +42,15 @@ public:
 
     void checkStatus() {
         cout << "----------------------" << endl;
-        cout << " /\\_/\\   " << endl;
-        cout << "( o.o )  Name: " << name << endl;
-        cout << " > ^ <   " << endl;
-        cout << "Hunger:     " << printStatBar(hunger) << " " << hunger << endl;
-        cout << "Happiness:  " << printStatBar(happiness) << " " << happiness << endl;
-        cout << "Cleanliness:" << printStatBar(cleanliness) << " " << cleanliness << endl;
+        cout << "|                      |" << endl;
+        cout << "|  /\\_/\\               |" << endl;
+        cout << "| ( o.o )  Name: " << name << "   |" << endl;
+        cout << "|  > ^ <                |" << endl;
+        cout << "| Hunger:     " << printStatBar(hunger) << " " << hunger << "  |" << endl;
+        cout << "| Happiness:  " << printStatBar(happiness) << " " << happiness << "  |" << endl;
+        cout << "| Cleanliness:" << printStatBar(cleanliness) << " " << cleanliness << "  |" << endl;
         if (isSick) {
-            cout << name << " is sick." << endl;
+            cout << "| " << name << " is sick.       |" << endl;
         }
         cout << "----------------------" << endl;
     }
@@ -58,7 +59,7 @@ public:
         // Simulate random events
         if (hunger == 0 || happiness == 0 || cleanliness == 0) {
             isSick = true;
-            cout << name << " is sick due to neglect!" << endl;
+            cout << "\033[1;31m" << name << " is sick due to neglect!" << "\033[0m" << endl;
         } else {
             isSick = false;
         }
@@ -117,6 +118,16 @@ public:
     }
 };
 
+void displayInstructions() {
+    cout << "Instructions:" << endl;
+    cout << "1. Feed: Decreases hunger of the pet. Cost: $5." << endl;
+    cout << "2. Play: Increases happiness of the pet. Earn: $10." << endl;
+    cout << "3. Clean: Increases cleanliness of the pet. Earn: $5." << endl;
+    cout << "4. If any attribute (hunger, happiness, cleanliness) reaches 0, the pet gets sick." << endl;
+    cout << "5. You must bring the sick pet to the vet. Cost: $50." << endl;
+    cout << "6. You can quit the game anytime." << endl;
+}
+
 void displayWelcomeMessage() {
     cout << "*******************************************************" << endl;
     cout << "*                                                     *" << endl;
@@ -136,78 +147,98 @@ int main() {
     
     displayWelcomeMessage();
 
-    string petName;
-    cout << "Enter the name of your pet: ";
-    getline(cin, petName);
-
-    VirtualPet pet(petName);
-    Player player;
-
-    cout << endl << "Take care of your pet, " << pet.getName() << ", by feeding, playing, and cleaning." << endl;
-    cout << "You have $" << player.getMoney() << " to start with." << endl;
-
-    char choice;
+    char startChoice;
     do {
-        cout << endl;
-        pet.checkStatus();
-        cout << "You have $" << player.getMoney() << "." << endl;
-        cout << "Select an action:" << endl;
-        cout << "1. Feed" << endl;
-        cout << "2. Play" << endl;
-        cout << "3. Clean" << endl;
-        cout << "4. Quit" << endl;
-        cout << "Your choice: ";
-        cin >> choice;
+        cout << "Press 'S' to start the game or 'I' to view instructions: ";
+        cin >> startChoice;
 
-        switch(choice) {
-            case '1':
-                if (player.getMoney() >= 5) {
-                    pet.feed();
-                    player.subtractMoney(5); // Cost of feeding
-                } else {
-                    cout << "You don't have enough money to feed " << pet.getName() << "." << endl;
+        if (startChoice == 'I' || startChoice == 'i') {
+            cout << "----------------------" << endl;
+            displayInstructions();
+            cout << "----------------------" << endl;
+        } else if (startChoice == 'S' || startChoice == 's') {
+            string petName;
+            cout << "Enter the name of your pet: ";
+            cin.ignore();
+            getline(cin, petName);
+
+            VirtualPet pet(petName);
+            Player player;
+
+            cout << endl << "Take care of your pet, " << pet.getName() << ", by feeding, playing, and cleaning." << endl;
+            cout << "You have $" << player.getMoney() << " to start with." << endl;
+
+            char choice;
+            do {
+                cout << endl;
+                pet.checkStatus();
+                cout << "You have $" << player.getMoney() << "." << endl;
+                cout << "Select an action:" << endl;
+                cout << "1. Feed" << endl;
+                cout << "2. Play" << endl;
+                cout << "3. Clean" << endl;
+                cout << "4. Quit" << endl;
+                cout << "Your choice: ";
+                cin >> choice;
+                cout << endl;
+
+                switch(choice) {
+                    case '1':
+                        if (player.getMoney() >= 5) {
+                            pet.feed();
+                            player.subtractMoney(5); // Cost of feeding
+                        } else {
+                            cout << "You don't have enough money to feed " << pet.getName() << "." << endl;
+                        }
+                        break;
+                    case '2':
+                        pet.play();
+                        player.addMoney(10); // Earn money by playing
+                        break;
+                    case '3':
+                        pet.clean();
+                        player.addMoney(5); // Earn money by cleaning
+                        break;
+                    case '4':
+                        cout << "Exiting the game." << endl;
+                        break;
+                    default:
+                        cout << "Invalid choice. Try again." << endl;
                 }
-                break;
-            case '2':
-                pet.play();
-                player.addMoney(10); // Earn money by playing
-                break;
-            case '3':
-                pet.clean();
-                player.addMoney(5); // Earn money by cleaning
-                break;
-            case '4':
-                cout << "Exiting the game." << endl;
-                break;
-            default:
-                cout << "Invalid choice. Try again." << endl;
+
+                pet.update(); // Update pet's status after each action
+
+                if (pet.getIsSick()) {
+                    cout << pet.getName() << " is sick! You must bring your pet to the vet or the game will end." << endl;
+                    cout << "Cost of vet visit: $50" << endl;
+                    if (player.getMoney() >= 50) {
+                        cout << "Would you like to bring " << pet.getName() << " to the vet? (Y/N): ";
+                        char answer;
+                        cin >> answer;
+                        cout << endl;
+                        if (answer == 'Y' || answer == 'y') {
+                            player.subtractMoney(50); // Cost of vet visit
+                            pet.update(); // Cure the pet
+                            cout << pet.getName() << " has been cured and is feeling better now." << endl;
+                        } else {
+                            cout << "Game over. Your pet is still sick and you didn't bring it to the vet." << endl;
+                            break;
+                        }
+                    } else {
+                        cout << "You don't have enough money to bring " << pet.getName() << " to the vet." << endl;
+                        cout << "Game over. Your pet is still sick." << endl;
+                        break;
+                    }
+                }
+
+            } while(choice != '4');
+        } else {
+            cout << "Invalid choice. Please try again." << endl;
         }
 
-        pet.update(); // Update pet's status after each action
+        cout << endl << endl; // Add big space after user input
 
-        if (pet.getIsSick()) {
-            cout << pet.getName() << " is sick! You must bring your pet to the vet or the game will end." << endl;
-            cout << "Cost of vet visit: $50" << endl;
-            if (player.getMoney() >= 50) {
-                cout << "Would you like to bring " << pet.getName() << " to the vet? (Y/N): ";
-                char answer;
-                cin >> answer;
-                if (answer == 'Y' || answer == 'y') {
-                    player.subtractMoney(50); // Cost of vet visit
-                    pet.update(); // Cure the pet
-                    cout << pet.getName() << " has been cured and is feeling better now." << endl;
-                } else {
-                    cout << "Game over. Your pet is still sick and you didn't bring it to the vet." << endl;
-                    break;
-                }
-            } else {
-                cout << "You don't have enough money to bring " << pet.getName() << " to the vet." << endl;
-                cout << "Game over. Your pet is still sick." << endl;
-                break;
-            }
-        }
-
-    } while(choice != '4');
+    } while (startChoice != 'S' && startChoice != 's');
 
     return 0;
 }
