@@ -128,7 +128,7 @@ void displayInstructions() {
     cout << "2. Play: Increases happiness of the Tamamochi. Earn: $10." << endl;
     cout << "3. Clean: Increases cleanliness of the Tamamochi. Earn: $5." << endl;
     cout << "4. If any attribute (hunger, happiness, cleanliness) reaches 0, the Tamamochi gets sick." << endl;
-    cout << "5. You must bring the sick Tamamochi to the vet. Cost: $50." << endl;
+    cout << "5. You must bring the sick Tamamochi to the vet. Cost: $100" << endl; // Changed the cost to $100
     cout << "6. You can quit the game anytime." << endl;
 }
 
@@ -169,9 +169,8 @@ int main() {
             Tamamochi tamamochi(tamamochiName);
             Player player;
 
-            cout << endl << "Take care of your Tamamochi, " << tamamochi.getName() << ", by feeding, playing, and cleaning!" << endl;
+            cout << endl << "Take care of your Tamamochi, " << tamamochi.getName() << ", by feeding, playing, and cleaning." << endl;
             cout << "You have $" << player.getMoney() << " to start with." << endl;
-            cout << "Have fun! :D" << endl;
 
             char choice;
             do {
@@ -205,7 +204,7 @@ int main() {
                         player.addMoney(5); // Earn money by cleaning
                         break;
                     case '4':
-                        cout << "Exiting the game. Bye bye!" << endl;
+                        cout << "Exiting the game." << endl;
                         break;
                     default:
                         cout << "Invalid choice. Try again." << endl;
@@ -215,14 +214,14 @@ int main() {
 
                 if (tamamochi.getIsSick()) {
                     cout << tamamochi.getName() << " is sick! You must bring your Tamamochi to the vet or the game will end." << endl;
-                    cout << "Cost of vet visit: $50" << endl;
-                    if (player.getMoney() >= 50) {
+                    cout << "Cost of vet visit: $100" << endl; // Changed the cost to $100
+                    if (player.getMoney() >= 100) { // Changed the condition to 100
                         cout << "Would you like to bring " << tamamochi.getName() << " to the vet? (Y/N): ";
                         char answer;
                         cin >> answer;
                         cout << endl;
                         if (answer == 'Y' || answer == 'y') {
-                            player.subtractMoney(50); // Cost of vet visit
+                            player.subtractMoney(100); // Changed the cost to 100
                             tamamochi.update(); // Cure the Tamamochi
                             cout << tamamochi.getName() << " has been cured and is feeling better now." << endl;
                         } else {
@@ -241,7 +240,7 @@ int main() {
             cout << "Invalid choice. Please try again." << endl;
         }
 
-        cout << endl << endl; // Add big space after user input
+        cout << endl << endl << endl << endl << endl; // Add bigger space after user input
 
     } while (startChoice != 'S' && startChoice != 's');
 
