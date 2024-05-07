@@ -1,0 +1,213 @@
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+class VirtualPet {
+private:
+    string name;
+    int hunger;
+    int happiness;
+    int cleanliness;
+    bool isSick;
+
+public:
+    VirtualPet(string petName) {
+        name = petName;
+        hunger = 50;
+        happiness = 50;
+        cleanliness = 50;
+        isSick = false;
+    }
+
+    void feed() {
+        hunger -= 10;
+        if (hunger < 0) hunger = 0;
+        cout << name << " is fed. Hunger decreased." << endl;
+    }
+
+    void play() {
+        happiness += 10;
+        if (happiness > 100) happiness = 100;
+        cout << name << " is playing. Happiness increased." << endl;
+    }
+
+    void clean() {
+        cleanliness += 10;
+        if (cleanliness > 100) cleanliness = 100;
+        cout << name << " is cleaned. Cleanliness increased." << endl;
+    }
+
+    void checkStatus() {
+        cout << "----------------------" << endl;
+        cout << " /\\_/\\   " << endl;
+        cout << "( o.o )  Name: " << name << endl;
+        cout << " > ^ <   " << endl;
+        cout << "Hunger:     " << printStatBar(hunger) << " " << hunger << endl;
+        cout << "Happiness:  " << printStatBar(happiness) << " " << happiness << endl;
+        cout << "Cleanliness:" << printStatBar(cleanliness) << " " << cleanliness << endl;
+        if (isSick) {
+            cout << name << " is sick." << endl;
+        }
+        cout << "----------------------" << endl;
+    }
+
+    void update() {
+        // Simulate random events
+        if (hunger == 0 || happiness == 0 || cleanliness == 0) {
+            isSick = true;
+            cout << name << " is sick due to neglect!" << endl;
+        } else {
+            isSick = false;
+        }
+
+        // Decrease attributes over time
+        hunger += 5;
+        happiness -= 5;
+        cleanliness -= 5;
+
+        // Ensure attributes stay within bounds
+        if (hunger > 100) hunger = 100;
+        if (happiness < 0) happiness = 0;
+        if (cleanliness < 0) cleanliness = 0;
+    }
+
+    string getName() {
+        return name;
+    }
+
+    bool getIsSick() {
+        return isSick;
+    }
+
+private:
+    string printStatBar(int value) {
+        string bar;
+        int numBars = value / 10;
+        for (int i = 0; i < numBars; ++i) {
+            bar += '|';
+        }
+        return bar;
+    }
+};
+
+class Player {
+private:
+    int money;
+
+public:
+    Player() {
+        money = 100; // Initial allowance
+    }
+
+    int getMoney() {
+        return money;
+    }
+
+    void addMoney(int amount) {
+        money += amount;
+        cout << "You gained $" << amount << "." << endl;
+    }
+
+    void subtractMoney(int amount) {
+        money -= amount;
+        cout << "You lost $" << amount << "." << endl;
+    }
+};
+
+void displayWelcomeMessage() {
+    cout << "*******************************************************" << endl;
+    cout << "*                                                     *" << endl;
+    cout << "*              Welcome to Virtual Pet Simulator!      *" << endl;
+    cout << "*                                                     *" << endl;
+    cout << "*******************************************************" << endl;
+    cout << endl;
+    cout << "In this game, you'll take care of your virtual pet." << endl;
+    cout << "Give it a name, feed it, play with it, and keep it clean." << endl;
+    cout << "Watch out for sickness and make sure your pet stays happy!" << endl;
+    cout << "You have an allowance to start with. Earn more by playing and cleaning your pet." << endl;
+    cout << endl;
+}
+
+int main() {
+    srand(time(0)); // Seed for random number generator
+    
+    displayWelcomeMessage();
+
+    string petName;
+    cout << "Enter the name of your pet: ";
+    getline(cin, petName);
+
+    VirtualPet pet(petName);
+    Player player;
+
+    cout << endl << "Take care of your pet, " << pet.getName() << ", by feeding, playing, and cleaning." << endl;
+    cout << "You have $" << player.getMoney() << " to start with." << endl;
+
+    char choice;
+    do {
+        cout << endl;
+        pet.checkStatus();
+        cout << "You have $" << player.getMoney() << "." << endl;
+        cout << "Select an action:" << endl;
+        cout << "1. Feed" << endl;
+        cout << "2. Play" << endl;
+        cout << "3. Clean" << endl;
+        cout << "4. Quit" << endl;
+        cout << "Your choice: ";
+        cin >> choice;
+
+        switch(choice) {
+            case '1':
+                if (player.getMoney() >= 5) {
+                    pet.feed();
+                    player.subtractMoney(5); // Cost of feeding
+                } else {
+                    cout << "You don't have enough money to feed " << pet.getName() << "." << endl;
+                }
+                break;
+            case '2':
+                pet.play();
+                player.addMoney(10); // Earn money by playing
+                break;
+            case '3':
+                pet.clean();
+                player.addMoney(5); // Earn money by cleaning
+                break;
+            case '4':
+                cout << "Exiting the game." << endl;
+                break;
+            default:
+                cout << "Invalid choice. Try again." << endl;
+        }
+
+        pet.update(); // Update pet's status after each action
+
+        if (pet.getIsSick()) {
+            cout << pet.getName() << " is sick! You must bring your pet to the vet or the game will end." << endl;
+            cout << "Cost of vet visit: $50" << endl;
+            if (player.getMoney() >= 50) {
+                cout << "Would you like to bring " << pet.getName() << " to the vet? (Y/N): ";
+                char answer;
+                cin >> answer;
+                if (answer == 'Y' || answer == 'y') {
+                    player.subtractMoney(50); // Cost of vet visit
+                    pet.update(); // Cure the pet
+                    cout << pet.getName() << " has been cured and is feeling better now." << endl;
+                } else {
+                    cout << "Game over. Your pet is still sick and you didn't bring it to the vet." << endl;
+                    break;
+                }
+            } else {
+                cout << "You don't have enough money to bring " << pet.getName() << " to the vet." << endl;
+                cout << "Game over. Your pet is still sick." << endl;
+                break;
+            }
+        }
+
+    } while(choice != '4');
+
+    return 0;
+}
