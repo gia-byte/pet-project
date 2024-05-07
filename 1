@@ -5,7 +5,7 @@
 
 using namespace std;
 
-class VirtualPet {
+class Tamamochi {
 private:
     string name;
     int hunger;
@@ -14,8 +14,8 @@ private:
     bool isSick;
 
 public:
-    VirtualPet(string petName) {
-        name = petName;
+    Tamamochi(string tamamochiName) {
+        name = tamamochiName;
         hunger = 50;
         happiness = 50;
         cleanliness = 50;
@@ -43,9 +43,13 @@ public:
     void checkStatus() {
         cout << "----------------------" << endl;
         cout << "|                      |" << endl;
-        cout << "|  /\\_/\\               |" << endl;
-        cout << "| ( o.o )  Name: " << name << "   |" << endl;
-        cout << "|  > ^ <                |" << endl;
+        cout << "|     /\\_____/\\" << "         |" << endl;
+        cout << "|    /  o   o  \\  Name: " << name << "  |" << endl;
+        cout << "|   ( ==  ^  == )       |" << endl;
+        cout << "|    )         (        |" << endl;
+        cout << "|   (           )       |" << endl;
+        cout << "|  ( (  )   (  ) )      |" << endl;
+        cout << "| (__(__)___(__)__)     |" << endl;
         cout << "| Hunger:     " << printStatBar(hunger) << " " << hunger << "  |" << endl;
         cout << "| Happiness:  " << printStatBar(happiness) << " " << happiness << "  |" << endl;
         cout << "| Cleanliness:" << printStatBar(cleanliness) << " " << cleanliness << "  |" << endl;
@@ -120,25 +124,25 @@ public:
 
 void displayInstructions() {
     cout << "Instructions:" << endl;
-    cout << "1. Feed: Decreases hunger of the pet. Cost: $5." << endl;
-    cout << "2. Play: Increases happiness of the pet. Earn: $10." << endl;
-    cout << "3. Clean: Increases cleanliness of the pet. Earn: $5." << endl;
-    cout << "4. If any attribute (hunger, happiness, cleanliness) reaches 0, the pet gets sick." << endl;
-    cout << "5. You must bring the sick pet to the vet. Cost: $50." << endl;
+    cout << "1. Feed: Decreases hunger of the Tamamochi. Cost: $5." << endl;
+    cout << "2. Play: Increases happiness of the Tamamochi. Earn: $10." << endl;
+    cout << "3. Clean: Increases cleanliness of the Tamamochi. Earn: $5." << endl;
+    cout << "4. If any attribute (hunger, happiness, cleanliness) reaches 0, the Tamamochi gets sick." << endl;
+    cout << "5. You must bring the sick Tamamochi to the vet. Cost: $50." << endl;
     cout << "6. You can quit the game anytime." << endl;
 }
 
 void displayWelcomeMessage() {
     cout << "*******************************************************" << endl;
     cout << "*                                                     *" << endl;
-    cout << "*              Welcome to Virtual Pet Simulator!      *" << endl;
+    cout << "*              Welcome to Tamamochi Simulator!        *" << endl;
     cout << "*                                                     *" << endl;
     cout << "*******************************************************" << endl;
     cout << endl;
-    cout << "In this game, you'll take care of your virtual pet." << endl;
+    cout << "In this game, you'll take care of your virtual Tamamochi." << endl;
     cout << "Give it a name, feed it, play with it, and keep it clean." << endl;
-    cout << "Watch out for sickness and make sure your pet stays happy!" << endl;
-    cout << "You have an allowance to start with. Earn more by playing and cleaning your pet." << endl;
+    cout << "Watch out for sickness and make sure your Tamamochi stays happy!" << endl;
+    cout << "You have an allowance to start with. Earn more by playing and cleaning your Tamamochi." << endl;
     cout << endl;
 }
 
@@ -157,21 +161,22 @@ int main() {
             displayInstructions();
             cout << "----------------------" << endl;
         } else if (startChoice == 'S' || startChoice == 's') {
-            string petName;
-            cout << "Enter the name of your pet: ";
+            string tamamochiName;
+            cout << "Enter the name of your Tamamochi: ";
             cin.ignore();
-            getline(cin, petName);
+            getline(cin, tamamochiName);
 
-            VirtualPet pet(petName);
+            Tamamochi tamamochi(tamamochiName);
             Player player;
 
-            cout << endl << "Take care of your pet, " << pet.getName() << ", by feeding, playing, and cleaning." << endl;
+            cout << endl << "Take care of your Tamamochi, " << tamamochi.getName() << ", by feeding, playing, and cleaning!" << endl;
             cout << "You have $" << player.getMoney() << " to start with." << endl;
+            cout << "Have fun! :D" << endl;
 
             char choice;
             do {
                 cout << endl;
-                pet.checkStatus();
+                tamamochi.checkStatus();
                 cout << "You have $" << player.getMoney() << "." << endl;
                 cout << "Select an action:" << endl;
                 cout << "1. Feed" << endl;
@@ -185,48 +190,48 @@ int main() {
                 switch(choice) {
                     case '1':
                         if (player.getMoney() >= 5) {
-                            pet.feed();
+                            tamamochi.feed();
                             player.subtractMoney(5); // Cost of feeding
                         } else {
-                            cout << "You don't have enough money to feed " << pet.getName() << "." << endl;
+                            cout << "You don't have enough money to feed " << tamamochi.getName() << "." << endl;
                         }
                         break;
                     case '2':
-                        pet.play();
+                        tamamochi.play();
                         player.addMoney(10); // Earn money by playing
                         break;
                     case '3':
-                        pet.clean();
+                        tamamochi.clean();
                         player.addMoney(5); // Earn money by cleaning
                         break;
                     case '4':
-                        cout << "Exiting the game." << endl;
+                        cout << "Exiting the game. Bye bye!" << endl;
                         break;
                     default:
                         cout << "Invalid choice. Try again." << endl;
                 }
 
-                pet.update(); // Update pet's status after each action
+                tamamochi.update(); // Update Tamamochi's status after each action
 
-                if (pet.getIsSick()) {
-                    cout << pet.getName() << " is sick! You must bring your pet to the vet or the game will end." << endl;
+                if (tamamochi.getIsSick()) {
+                    cout << tamamochi.getName() << " is sick! You must bring your Tamamochi to the vet or the game will end." << endl;
                     cout << "Cost of vet visit: $50" << endl;
                     if (player.getMoney() >= 50) {
-                        cout << "Would you like to bring " << pet.getName() << " to the vet? (Y/N): ";
+                        cout << "Would you like to bring " << tamamochi.getName() << " to the vet? (Y/N): ";
                         char answer;
                         cin >> answer;
                         cout << endl;
                         if (answer == 'Y' || answer == 'y') {
                             player.subtractMoney(50); // Cost of vet visit
-                            pet.update(); // Cure the pet
-                            cout << pet.getName() << " has been cured and is feeling better now." << endl;
+                            tamamochi.update(); // Cure the Tamamochi
+                            cout << tamamochi.getName() << " has been cured and is feeling better now." << endl;
                         } else {
-                            cout << "Game over. Your pet is still sick and you didn't bring it to the vet." << endl;
+                            cout << "Game over. Your Tamamochi is still sick and you didn't bring it to the vet." << endl;
                             break;
                         }
                     } else {
-                        cout << "You don't have enough money to bring " << pet.getName() << " to the vet." << endl;
-                        cout << "Game over. Your pet is still sick." << endl;
+                        cout << "You don't have enough money to bring " << tamamochi.getName() << " to the vet." << endl;
+                        cout << "Game over. Your Tamamochi is still sick." << endl;
                         break;
                     }
                 }
