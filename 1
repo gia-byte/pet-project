@@ -32,11 +32,23 @@ public:
         cout << name << " is fed. Hunger decreased." << endl;
     }
 
-    void play() {
-        happiness += 10;
-        if (happiness > 100) happiness = 100;
-        cout << name << " is playing. Happiness increased." << endl;
-    }
+   void play() {
+    happiness += 10;
+    if (happiness > 100) happiness = 100;
+    cout << name << " is playing. Happiness increased." << endl;
+    
+    // Decrease cleanliness
+    cleanliness -= 10;
+    if (cleanliness < 0) cleanliness = 0;
+    cout << name << " is playing. Cleanliness decreased." << endl;
+
+    // Increase hunger
+    hunger += 10;
+    if (hunger > 100) hunger = 100;
+    cout << name << " is playing. Hunger increased." << endl;
+}
+
+
 
     void clean() {
         cleanliness += 10;
@@ -78,24 +90,27 @@ public:
 }
 
 
-    void update() {
-        // Simulate random events
-        if (hunger == 0 || happiness == 0 || cleanliness == 0) {
-            isSick = true;
-        } else {
-            isSick = false;
-        }
-
-        // Decrease attributes over time
-        hunger += 10;
-        happiness -= 10;
-        cleanliness -= 10;
-
-        // Ensure attributes stay within bounds
-        if (hunger > 100) hunger = 100;
-        if (happiness < 0) happiness = 0;
-        if (cleanliness < 0) cleanliness = 0;
+   void update() {
+    // Simulate random events
+    if (happiness <= 0 || cleanliness <= 0) {
+        isSick = true;
+    } else {
+        isSick = false;
     }
+
+    // Increase happiness if played with
+    if (happiness < 100) {
+        happiness += 10;
+    } else {
+        // Decrease happiness if not played with
+        happiness -= 10;
+    }
+
+    // Ensure attributes stay within bounds
+    if (hunger > 100) hunger = 100;
+    if (happiness < 0) happiness = 0;
+    if (cleanliness < 0) cleanliness = 0;
+}
 
     string getName() {
         return name;
@@ -149,7 +164,7 @@ void displayInstructions() {
     cout << "1. Feed: Decreases hunger of the Tamamochi. Cost: $5." << endl;
     cout << "2. Play: Increases happiness of the Tamamochi. Earn: $10." << endl;
     cout << "3. Clean: Increases cleanliness of the Tamamochi. Cost: $5." << endl;
-    cout << "4. If an attribute (happiness, cleanliness) reaches 0 and attribute (hunger) reaches 100, the Tamamochi gets sick." << endl;
+    cout << "4. If an attribute (happiness, cleanliness) reaches 0, the Tamamochi gets sick." << endl;
     cout << "5. When this happens, you must bring the sick Tamamochi to the vet or it will leave you. Cost: $100" << endl;
     cout << "6. You can quit the game anytime." << endl;
     cout << "7. When the hunger reaches 70, the Tamamochi is hungry." << endl;
