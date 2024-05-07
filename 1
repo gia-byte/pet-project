@@ -164,7 +164,7 @@ void displayInstructions() {
     cout << "1. Feed: Decreases hunger of the Tamamochi. Cost: $5." << endl;
     cout << "2. Play: Increases happiness of the Tamamochi. Earn: $10." << endl;
     cout << "3. Clean: Increases cleanliness of the Tamamochi. Cost: $5." << endl;
-    cout << "4. If an attribute (happiness, cleanliness) reaches 0, the Tamamochi gets sick." << endl;
+    cout << "4. If an attribute (happiness, cleanliness) reaches 0, and attribute (hunger) reaches 100, the Tamamochi gets sick." << endl;
     cout << "5. When this happens, you must bring the sick Tamamochi to the vet or it will leave you. Cost: $100" << endl;
     cout << "6. You can quit the game anytime." << endl;
     cout << "7. When the hunger reaches 70, the Tamamochi is hungry." << endl;
@@ -273,19 +273,49 @@ int main() {
                             cout << tamamochi.getName() << " has been cured and is feeling better now." << endl;
                         } else {
                             cout << "Game over. Your Tamamochi left you and is still sick. It was taken care of by a better owner. :(" << endl;
+                            cout << endl;
+                            cout << "　　　　　／＞　　フ" << endl;
+                            cout << "　　　　　| 　_　 _ l" << endl;
+                            cout << "　 　　　／` ミ＿xノ" << endl;
+                            cout << "　　 　 /　　　 　 |" << endl;
+                            cout << "　　　 /　 ヽ　　 ﾉ" << endl;
+                            cout << "　 　 │　　| | |" << endl;
+
                             break;
                         }
                     } else {
                         cout << "You don't have enough money to bring " << tamamochi.getName() << " to the vet." << endl;
-                        cout << "Game over. Your Tamamochi left you and is still sick. It was taken care of by a better owner. :(" << endl;
+                            cout << "Game over. Your Tamamochi left you and is still sick. It was taken care of by a better owner. :(" << endl;
+                            cout << endl;
+                            cout << "　　　　　／＞　　フ" << endl;
+                            cout << "　　　　　| 　_　 _ l" << endl;
+                            cout << "　 　　　／` ミ＿xノ" << endl;
+                            cout << "　　 　 /　　　 　 |" << endl;
+                            cout << "　　　 /　 ヽ　　 ﾉ" << endl;
+                            cout << "　 　 │　　| | |" << endl;
+
+                        
                         break;
                     }
                 }
 
                 if (tamamochi.hasWon()) {
-                    cout << "Congratulations! You have won the game by keeping " << tamamochi.getName() << " healthy and happy!" << endl;
-                    break;
-                }
+    cout << "Congratulations! You have won the game by keeping " << tamamochi.getName() << " healthy and happy!" << endl;
+    cout << endl;
+    cout << "         _ _..._ __        " << endl;
+    cout << "          \\)`    (` /       " << endl;
+    cout << "           /      `\\        " << endl;
+    cout << "          |  d  b   |       " << endl;
+    cout << "          =\\  Y    =/--..-=\"````\"-." << endl;
+    cout << "            '.=__.-'               `\\ " << endl;
+    cout << "               o/                 /\\ \\" << endl;
+    cout << "                |                 | \\ \\   / )" << endl;
+    cout << "                 \\    .--\"\"`\\    <   \\ '-' /" << endl;
+    cout << "                //   |      ||    \\   '---'" << endl;
+    cout << "           jgs ((,,_/      ((,,___/" << endl;
+    break;
+}
+
 
             } while(choice != '4');
         } else {
