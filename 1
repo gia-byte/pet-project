@@ -16,6 +16,10 @@ private:
 public:
     Tamamochi(string tamamochiName) {
         name = tamamochiName;
+        resetStats();
+    }
+
+    void resetStats() {
         hunger = 50;
         happiness = 50;
         cleanliness = 50;
@@ -41,37 +45,51 @@ public:
     }
 
     void checkStatus() {
-        cout << "----------------------" << endl;
-        cout << "|                      |" << endl;
-        cout << "|     /\\_____/\\" << "         |" << endl;
-        cout << "|    /  o   o  \\  Name: " << name << "  |" << endl;
-        cout << "|   ( ==  ^  == )       |" << endl;
-        cout << "|    )         (        |" << endl;
-        cout << "|   (           )       |" << endl;
-        cout << "|  ( (  )   (  ) )      |" << endl;
-        cout << "| (__(__)___(__)__)     |" << endl;
-        cout << "| Hunger:     " << printStatBar(hunger) << " " << hunger << "  |" << endl;
-        cout << "| Happiness:  " << printStatBar(happiness) << " " << happiness << "  |" << endl;
-        cout << "| Cleanliness:" << printStatBar(cleanliness) << " " << cleanliness << "  |" << endl;
-        if (isSick) {
-            cout << "| " << name << " is sick.       |" << endl;
-        }
-        cout << "----------------------" << endl;
+    cout << "----------------------" << endl;
+    cout << "|                      |" << endl;
+    cout << "|     /\\_____/\\" << "         |" << endl;
+    cout << "|    /  o   o  \\  Name: " << name << "  |" << endl;
+    cout << "|   ( ==  ^  == )       |" << endl;
+    cout << "|    )         (        |" << endl;
+    cout << "|   (           )       |" << endl;
+    cout << "|  ( (  )   (  ) )      |" << endl;
+    cout << "| (__(__)___(__)__)     |" << endl;
+    cout << "| Hunger:     " << printStatBar(hunger) << " " << hunger << "  |" << endl;
+    cout << "| Happiness:  " << printStatBar(happiness) << " " << happiness << "  |" << endl;
+    cout << "| Cleanliness:" << printStatBar(cleanliness) << " " << cleanliness << "  |" << endl;
+    
+    // Notify if hungry
+    if (hunger >= 70) {
+        cout << "| " << name << " is hungry.       |" << endl;
     }
+    // Notify if sad
+    if (happiness <= 20) {
+        cout << "| " << name << " is sad.       |" << endl;
+    }
+    // Notify if dirty
+    if (cleanliness <= 20) {
+        cout << "| " << name << " is dirty.       |" << endl;
+    }
+    
+    if (isSick) {
+        cout << "| " << name << " is sick.       |" << endl;
+    }
+    cout << "----------------------" << endl;
+}
+
 
     void update() {
         // Simulate random events
         if (hunger == 0 || happiness == 0 || cleanliness == 0) {
             isSick = true;
-            cout << "\033[1;31m" << name << " is sick due to neglect!" << "\033[0m" << endl;
         } else {
             isSick = false;
         }
 
         // Decrease attributes over time
-        hunger += 5;
-        happiness -= 5;
-        cleanliness -= 5;
+        hunger += 10;
+        happiness -= 10;
+        cleanliness -= 10;
 
         // Ensure attributes stay within bounds
         if (hunger > 100) hunger = 100;
@@ -85,6 +103,10 @@ public:
 
     bool getIsSick() {
         return isSick;
+    }
+
+    bool hasWon() {
+        return hunger == 0 && happiness == 100 && cleanliness == 100;
     }
 
 private:
@@ -126,10 +148,15 @@ void displayInstructions() {
     cout << "Instructions:" << endl;
     cout << "1. Feed: Decreases hunger of the Tamamochi. Cost: $5." << endl;
     cout << "2. Play: Increases happiness of the Tamamochi. Earn: $10." << endl;
-    cout << "3. Clean: Increases cleanliness of the Tamamochi. Earn: $5." << endl;
-    cout << "4. If any attribute (hunger, happiness, cleanliness) reaches 0, the Tamamochi gets sick." << endl;
-    cout << "5. You must bring the sick Tamamochi to the vet. Cost: $100" << endl; // Changed the cost to $100
+    cout << "3. Clean: Increases cleanliness of the Tamamochi. Cost: $5." << endl;
+    cout << "4. If an attribute (happiness, cleanliness) reaches 0 and attribute (hunger) reaches 100, the Tamamochi gets sick." << endl;
+    cout << "5. When this happens, you must bring the sick Tamamochi to the vet or it will leave you. Cost: $100" << endl;
     cout << "6. You can quit the game anytime." << endl;
+    cout << "7. When the hunger reaches 70, the Tamamochi is hungry." << endl;
+    cout << "8. When the happiness reaches 20, the Tamamochi is sad." << endl;
+    cout << "9. When the cleanliness reaches 20, the Tamamochi is dirty." << endl;
+    cout << "10. You win the game when hunger is 0, happiness is 100, and cleanliness is 100." << endl;
+
 }
 
 void displayWelcomeMessage() {
@@ -162,15 +189,16 @@ int main() {
             cout << "----------------------" << endl;
         } else if (startChoice == 'S' || startChoice == 's') {
             string tamamochiName;
-            cout << "Enter the name of your Tamamochi: ";
+            cout << "Name your Tamamochi! : ";
             cin.ignore();
             getline(cin, tamamochiName);
 
             Tamamochi tamamochi(tamamochiName);
             Player player;
 
-            cout << endl << "Take care of your Tamamochi, " << tamamochi.getName() << ", by feeding, playing, and cleaning." << endl;
+            cout << endl << "Take care of your Tamamochi, " << tamamochi.getName() << ", by feeding, playing, and cleaning!" << endl;
             cout << "You have $" << player.getMoney() << " to start with." << endl;
+            cout << "Have fun~!" << endl;
 
             char choice;
             do {
@@ -200,11 +228,15 @@ int main() {
                         player.addMoney(10); // Earn money by playing
                         break;
                     case '3':
-                        tamamochi.clean();
-                        player.addMoney(5); // Earn money by cleaning
+                        if (player.getMoney() >= 5) {
+                            tamamochi.clean();
+                            player.subtractMoney(5); // Cost of cleaning
+                        } else {
+                            cout << "You don't have enough money to clean " << tamamochi.getName() << "." << endl;
+                        }
                         break;
                     case '4':
-                        cout << "Exiting the game." << endl;
+                        cout << "Exiting the game. Play again next time!" << endl;
                         break;
                     default:
                         cout << "Invalid choice. Try again." << endl;
@@ -213,8 +245,8 @@ int main() {
                 tamamochi.update(); // Update Tamamochi's status after each action
 
                 if (tamamochi.getIsSick()) {
-                    cout << tamamochi.getName() << " is sick! You must bring your Tamamochi to the vet or the game will end." << endl;
-                    cout << "Cost of vet visit: $100" << endl; // Changed the cost to $100
+                    cout << "OH NO!" << tamamochi.getName() << " is sick! You must bring your Tamamochi to the vet or the game will end." << endl;
+                    cout << "Cost of vet visit: $100" << endl;
                     if (player.getMoney() >= 100) { // Changed the condition to 100
                         cout << "Would you like to bring " << tamamochi.getName() << " to the vet? (Y/N): ";
                         char answer;
@@ -222,22 +254,27 @@ int main() {
                         cout << endl;
                         if (answer == 'Y' || answer == 'y') {
                             player.subtractMoney(100); // Changed the cost to 100
-                            tamamochi.update(); // Cure the Tamamochi
+                            tamamochi.resetStats(); // Reset stats after curing Tamamochi
                             cout << tamamochi.getName() << " has been cured and is feeling better now." << endl;
                         } else {
-                            cout << "Game over. Your Tamamochi is still sick and you didn't bring it to the vet." << endl;
+                            cout << "Game over. Your Tamamochi left you and is still sick. It was taken care of by a better owner. :(" << endl;
                             break;
                         }
                     } else {
                         cout << "You don't have enough money to bring " << tamamochi.getName() << " to the vet." << endl;
-                        cout << "Game over. Your Tamamochi is still sick." << endl;
+                        cout << "Game over. Your Tamamochi left you and is still sick. It was taken care of by a better owner. :(" << endl;
                         break;
                     }
                 }
 
+                if (tamamochi.hasWon()) {
+                    cout << "Congratulations! You have won the game by keeping " << tamamochi.getName() << " healthy and happy!" << endl;
+                    break;
+                }
+
             } while(choice != '4');
         } else {
-            cout << "Invalid choice. Please try again." << endl;
+            cout << "Invalid choice! Please try again." << endl;
         }
 
         cout << endl << endl << endl << endl << endl; // Add bigger space after user input
